@@ -5,7 +5,7 @@ import {Button} from "./Button";
 type AddFormPropsType = {
     title: string
 }
-export const AddTaskForm = () => {
+export const AddTaskForm = (props: AddFormPropsType) => {
     return (
         <div>
             <input/>
