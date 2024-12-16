@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import './App.css';
 import {Todolist} from "./components/Todolist";
+import {v1} from 'uuid';
 
 export type TaskType = {
-    id: number
+    id: string
     title: string
     isDone: boolean
 }
@@ -11,23 +12,33 @@ export type TaskType = {
 export type filterType = "all" | "completed" | "active"
 
 function App() {
+    console.log(v1());
 
     //BLL
     const todolistTitles = ['Что помыть', 'Title2', 'Title3']
 
     const [tasks, setTasks] = useState<Array<TaskType>>(
         [
-            {id: 1, title: "Помыть посуду", isDone: true},
-            {id: 2, title: "Помыть попу", isDone: false},
-            {id: 3, title: "Помыть собаку", isDone: false}
+            {id: v1(), title: "Помыть посуду", isDone: true},
+            {id: v1(), title: "Помыть попу", isDone: false},
+            {id: v1(), title: "Помыть собаку", isDone: false}
         ]
     )
 
-    const removeTask = (taskId: number) => {
+    const removeTask = (taskId: string) => {
         const nextState = tasks.filter((task) => task.id !== taskId)
         setTasks(nextState)
     }
 
+    const addTask = (title: string) => {
+        const newTask = {
+            id: v1(),
+            title: title,
+            isDone: false,
+        }
+        const nextState: Array<TaskType> = [newTask, ...tasks]
+        setTasks(nextState)
+    }
     // UI
 
     // Вопросы: организация кода - можно ли оставлять IF в подвешенном состоянии на странице? Это норм?
@@ -51,8 +62,12 @@ function App() {
 
     return (
         <div className="App">
-            <Todolist title={todolistTitles[0]} tasks={filteredTasks} removeTask={removeTask}
-                      changeTodoListFilter={changeTodoListFilter}/>
+            <Todolist title={todolistTitles[0]}
+                      tasks={filteredTasks}
+                      removeTask={removeTask}
+                      changeTodoListFilter={changeTodoListFilter}
+                      addTask={addTask}
+            />
         </div>
     );
 }
