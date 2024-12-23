@@ -1,18 +1,19 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import {filterType, TaskType} from '../App';
 import {TodolistHeader} from './TodolistHeader';
-import {AddTaskForm} from './AddTaskForm';
 import {FilterButtons} from './FilterButtons';
 import {Button} from './Button';
 
 type TodolistPropsType = {
     title: string
     tasks: Array<TaskType>
+    filter: filterType
     removeTask: (taskId: string) => void
     addTask: (title: string) => void
     changeTodoListFilter: (nextFilter: filterType) => void
+    changeTaskStatus: (taskId: string, newStatus: boolean) => void
 }
-export const Todolist = ({title, tasks, removeTask, changeTodoListFilter, addTask}: TodolistPropsType) => {
+export const Todolist = ({title, tasks, removeTask, changeTodoListFilter, addTask, changeTaskStatus, filter}: TodolistPropsType) => {
 
     // const taskInputRef = useRef<HTMLInputElement>(null);
 
@@ -20,6 +21,7 @@ export const Todolist = ({title, tasks, removeTask, changeTodoListFilter, addTas
     // const {title, tasks} = props
 
     const [taskTitle, setTaskTitle] = useState('');
+    const [error, setError] = useState<boolean>(false);
 
     // условный рендеринг
     const taskList = tasks.length === 0
@@ -27,11 +29,16 @@ export const Todolist = ({title, tasks, removeTask, changeTodoListFilter, addTas
         : <ul>
             {
                 tasks.map((el) => {
+                    const ChangeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => changeTaskStatus(el.id, e.currentTarget.checked)
                     return (
                         <li key={el.id}>
-                            <input type="checkbox" checked={el.isDone}/>
-                            <span>{el.title} </span>
-                            <Button title={'X'} onClickHandler={() => removeTask(el.id)}/>
+                            <input
+                                type="checkbox"
+                                checked={el.isDone}
+                                onChange={ChangeTaskStatusHandler}
+                            />
+                            <span className={el.isDone ? "task-done" : "task"}>{el.title}</span>
+                            <Button title={'X'} onClickHandler={() => removeTask(el.id)} />
                         </li>
                     )
                 })
@@ -41,11 +48,19 @@ export const Todolist = ({title, tasks, removeTask, changeTodoListFilter, addTas
     const isAddTaskPossible = taskTitle.length <= 15
 
     const addTaskHandler = () => {
-        addTask(taskTitle)
+        const trimmedTitle = taskTitle.trim()
+        if(trimmedTitle) {
+            addTask(trimmedTitle)
+        } else {
+            setError(true)
+        }
         setTaskTitle('')
     }
 
-    const setLocalTitleHandler = (e: ChangeEvent<HTMLInputElement>) => setTaskTitle(e.currentTarget.value)
+    const setLocalTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        error && setError(false)
+        setTaskTitle(e.currentTarget.value)
+    }
 
     const onKeyDownAddTaskHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if ((taskTitle.length && isAddTaskPossible) && e.key === 'Enter') {
@@ -60,16 +75,22 @@ export const Todolist = ({title, tasks, removeTask, changeTodoListFilter, addTas
                 <input value={taskTitle}
                        onChange={setLocalTitleHandler}
                        onKeyDown={onKeyDownAddTaskHandler}
+                       className={error ? 'inputError' : ''}
                 />
 
-                <Button title="+" onClickHandler={addTaskHandler}
+                <Button title="+"
+                        onClickHandler={addTaskHandler}
                         isDisabled={!taskTitle.length || !isAddTaskPossible}
                 />
             </div>
-            {!isAddTaskPossible && <div>Stop it</div>}
-            <AddTaskForm addTask={addTask}/>
+            {!isAddTaskPossible && <div>Task title is too long</div>}
+            {!taskTitle.length && <div>Enter task title (max 15 chars)</div>}
+            {error && <div style={{color: "red"}}>Task title is required</div>}
+            {/*<AddTaskForm addTask={addTask}/>*/}
             {taskList}
-            <FilterButtons changeTodoListFilter={changeTodoListFilter}/>
+            <FilterButtons filter={filter}
+                           changeTodoListFilter={changeTodoListFilter}
+            />
         </div>
     );
 };
