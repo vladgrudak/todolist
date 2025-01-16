@@ -1,28 +1,29 @@
 import {Button} from "./Button";
-import {filterType} from "../App";
+import {FilterType} from "../App";
 
 type FilterButtonsPropsType = {
-    changeTodoListFilter: (nextFilter: filterType) => void
-    filter?: filterType
+    changeTodoListFilter: (nextFilter: FilterType, todolistId: string) => void
+    todolistId: string
+    filter?: FilterType
 }
 
-export const FilterButtons = ({changeTodoListFilter, filter}: FilterButtonsPropsType) => {
+export const FilterButtons = ({changeTodoListFilter, filter, todolistId}: FilterButtonsPropsType) => {
     return (
         <div>
             <Button
                 classes={filter === 'all' ? 'filter-btn-active': ''}
                 title='All'
-                onClickHandler={() => changeTodoListFilter('all')}
+                onClickHandler={() => changeTodoListFilter('all', todolistId)}
             />
             <Button
                 classes={filter === 'active' ? 'filter-btn-active': ''}
                 title='Active'
-                onClickHandler={() => changeTodoListFilter('active')}
+                onClickHandler={() => changeTodoListFilter('active', todolistId)}
             />
             <Button
                 classes={filter === 'completed' ? 'filter-btn-active': ''}
                 title='Completed'
-                onClickHandler={() => changeTodoListFilter('completed')}
+                onClickHandler={() => changeTodoListFilter('completed', todolistId)}
             />
         </div>
     );

@@ -30,6 +30,15 @@
   border: 2px solid green;
   border-radius: 2px;
 }
+
+.delete-todolist-btn {
+
+}
+
+.todolist-header {
+  display: inline-block;
+}
+
 .inputError {
   border: 2px solid red;
   outline: none;

@@ -11,6 +11,9 @@ export const Button = ({title, onClickHandler, isDisabled, classes}: ButtonProps
         <button
             className={classes}
             disabled={isDisabled}
-            onClick={onClickHandler}>{title}</button>
+            onClick={onClickHandler}
+        >
+            {title}
+        </button>
     );
 };

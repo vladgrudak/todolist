@@ -3,6 +3,6 @@ type TodolistHeaderPropsType = {
 }
 export const TodolistHeader = ({title}: TodolistHeaderPropsType) => {
     return (
-        <h3>{title}</h3>
+        <h3 className={'todolist-header'}>{title}</h3>
     );
 };
