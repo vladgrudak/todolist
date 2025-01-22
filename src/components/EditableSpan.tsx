@@ -1,4 +1,4 @@
-import {ChangeEvent, useState} from 'react';
+import {ChangeEvent, type KeyboardEvent, useState} from 'react';
 
 type Props = {
     title: string
@@ -21,6 +21,11 @@ export const EditableSpan = ({title, changeItemName} : Props) => {
         setIsEditMode(false)
         changeItemName(itemTitle)
     }
+    const changeTitleOnEnter = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            turnOffEditMode()
+        }
+    }
 
     return (
         isEditMode
@@ -29,6 +34,7 @@ export const EditableSpan = ({title, changeItemName} : Props) => {
                 value={itemTitle}
                 onChange={setLocalTitleHandler}
                 onBlur={turnOffEditMode}
+                onKeyDown={changeTitleOnEnter}
             />
             : <span onDoubleClick={turnOnEditMode}>{title}</span>
     )
