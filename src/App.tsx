@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {Todolist} from './components/Todolist';
 import {v1} from 'uuid';
+import { CreateItemForm } from './components/CreateItemForm';
 
 export type TaskType = {
     id: string
@@ -27,7 +28,7 @@ function App() {
 
     const [todolists, setTodolists] = useState<Array<TodolistType>>([
         {id: todolistId1, title: todolistTitles[0], filter: 'all'},
-        {id: todolistId2, title: todolistTitles[1], filter: 'completed'}
+        {id: todolistId2, title: todolistTitles[1], filter: 'all'}
     ])
 
     const [tasks, setTasks] = useState({
@@ -69,9 +70,26 @@ function App() {
         })
     }
 
+    const changeTaskTitle = (taskId: string, newTitle: string, todolistId: string) => {
+        setTasks({
+            ...tasks,
+            [todolistId]: tasks[todolistId].map(t => t.id === taskId ? {...t, title: newTitle} : t)
+        })
+    }
+
     const deleteTodolist = (todolistId: string) => {
         setTodolists(todolists.filter(tl => tl.id !== todolistId))
         delete tasks[todolistId]
+    }
+
+    const addTodolist = (title: string) => {
+        const newTodolistId = v1()
+        setTodolists([{id: newTodolistId, title, filter:'all'}, ...todolists])
+        setTasks({...tasks, [newTodolistId]: []})
+    }
+
+    const changeTodoListTitle = (newTitle: string, todolistId: string) => {
+        setTodolists(todolists.map(tl => tl.id === todolistId ? {...tl, title: newTitle} : tl))
     }
 
 
@@ -100,9 +118,11 @@ function App() {
             removeTask={removeTask}
             addTask={addTask}
             changeTaskStatus={changeTaskStatus}
+            changeTaskTitle={changeTaskTitle}
 
             changeTodoListFilter={changeTodoListFilter}
             deleteTodolist={deleteTodolist}
+            changeTodoListTitle={changeTodoListTitle}
         />
 
     })
@@ -110,6 +130,7 @@ function App() {
 
     return (
         <div className="App">
+            <CreateItemForm addItem={addTodolist} />
             {todolistsAll}
         </div>
     );
