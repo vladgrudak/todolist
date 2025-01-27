@@ -1,5 +1,7 @@
-import {Button} from "./Button";
+import Button from '@mui/material/Button';
 import {FilterType} from "../App";
+import Box from '@mui/material/Box';
+import {containerSx} from '../FilterButtons.styles'
 
 type FilterButtonsPropsType = {
     changeTodoListFilter: (nextFilter: FilterType, todolistId: string) => void
@@ -9,22 +11,22 @@ type FilterButtonsPropsType = {
 
 export const FilterButtons = ({changeTodoListFilter, filter, todolistId}: FilterButtonsPropsType) => {
     return (
-        <div>
+        <Box sx={containerSx}>
             <Button
-                classes={filter === 'all' ? 'filter-btn-active': ''}
-                title='All'
-                onClickHandler={() => changeTodoListFilter('all', todolistId)}
-            />
+                variant={'contained'}
+                color={filter === 'all' ? 'primary': 'secondary'}
+                onClick={() => changeTodoListFilter('all', todolistId)}
+            >All</Button>
             <Button
-                classes={filter === 'active' ? 'filter-btn-active': ''}
-                title='Active'
-                onClickHandler={() => changeTodoListFilter('active', todolistId)}
-            />
+                variant={'contained'}
+                color={filter === 'active' ? 'primary': 'secondary'}
+                onClick={() => changeTodoListFilter('active', todolistId)}
+            >Active</Button>
             <Button
-                classes={filter === 'completed' ? 'filter-btn-active': ''}
-                title='Completed'
-                onClickHandler={() => changeTodoListFilter('completed', todolistId)}
-            />
-        </div>
+                variant={'contained'}
+                color={filter === 'completed' ? 'primary': 'secondary'}
+                onClick={() => changeTodoListFilter('completed', todolistId)}
+            >Completed</Button>
+        </Box>
     );
 };
